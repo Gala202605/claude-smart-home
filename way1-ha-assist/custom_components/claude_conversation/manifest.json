@@ -1,0 +1,12 @@
+{
+  "domain": "claude_conversation",
+  "name": "Claude Smart Home Assistant",
+  "version": "1.0.0",
+  "requirements": [],
+  "dependencies": ["conversation"],
+  "codeowners": [],
+  "iot_class": "cloud_polling",
+  "integration_type": "service",
+  "documentation": "https://github.com/yourname/claude-smart-home",
+  "issue_tracker": "https://github.com/yourname/claude-smart-home/issues"
+}

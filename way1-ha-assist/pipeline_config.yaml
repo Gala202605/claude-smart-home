@@ -1,0 +1,102 @@
+# ============================================================
+# Home Assistant 语音管道配置
+# 方式一：小爱音箱 + HA Assist + Claude
+# ============================================================
+#
+# 使用方式：
+#   1. 把下方配置添加到 HA 的 configuration.yaml
+#   2. 重启 HA
+#   3. 在 HA → 设置 → 语音助手 → Assist Pipeline 中选择对应管道
+#
+# ============================================================
+
+# ========== 方案 A：使用自定义组件（推荐） ==========
+# 需要先安装本项目的 custom_components/claude_conversation/
+claude_conversation:
+  api_key: "sk-ant-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  # 如果不填，使用以下默认值
+  # api_url: "https://api.anthropic.com/v1/messages"
+  # model: "claude-sonnet-4-20250514"
+  # system_prompt: "..."  # 不填则使用内置默认提示词
+  # max_tokens: 1024
+
+
+# ========== 方案 B：使用 HA 自带的 OpenAI Conversation 集成 ==========
+# 优点：不用装自定义组件，HA 自带
+# 缺点：无法使用工具调用，Claude 只能文字回复（适合纯问答场景）
+#
+# 注意：Anthropic 的标准 API 不完全兼容 OpenAI 格式，
+# 需要先用一个轻量代理转发，或者确认 Anthropic 已支持 /v1/chat/completions
+#
+# openai_conversation:
+#   - agent_id: claude_proxy
+#     api_key: "sk-ant-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+#     base_url: "https://api.anthropic.com/v1/"  # 需要确认兼容性
+#     model: "claude-sonnet-4-20250514"
+#     prompt: "..."
+#   # 如果 Anthropic API 不兼容，可以用 Cloudflare Worker 做中转
+
+
+# ========== 语音管道（Assist Pipeline）配置 ==========
+# 这部分在 HA UI 里配置：设置 → 语音助手 → Assist Pipeline
+# 以下是推荐的三个组件选择：
+
+# ---- ASR（语音转文字）：Wyoming Whisper ----
+# 1. 在 HA 加载项商店搜索 "Wyoming Whisper"
+# 2. 安装并启动
+# 3. 更新模型（推荐 large-v3 或 medium，根据硬件性能选择）
+# 4. 在 Pipeline 中选择 Whisper 作为语音转文字引擎
+
+# ---- 对话代理：Claude ----
+# 1. 在 Pipeline 的对话代理中选择 "Claude Smart Home Assistant"
+# 2. 或选择 "OpenAI" (如果用了方案B)
+
+# ---- TTS（文字转语音）：Edge TTS / Piper ----
+# 方案 A：Microsoft Edge TTS（推荐，音质最好）
+#   - 安装 "Microsoft Text-to-Speech" 加载项
+#   - 选择中文语音（zh-CN-XiaoxiaoNeural 女声）
+#
+# 方案 B：Piper TTS（完全本地，无需网络）
+#   - 在加载项商店安装 "Piper"
+#   - 下载中文语音包（cmn-CN 或 cmn_HK）
+#   - 硬件要求低于 Whisper
+
+
+# ========== Xiaomi Mi Auto 集成（小爱音箱接入） ==========
+# 1. 安装 HACS（如果没有的话）
+# 2. 在 HACS 中搜索并安装 "Xiaomi Mi Auto"
+# 3. 重启 HA
+# 4. 配置 → 集成 → 添加集成 → 搜索 "Xiaomi Mi Auto"
+# 5. 扫码登录小米账号
+# 6. 选择要接入的小爱音箱
+# 7. 完成后小爱会作为"语音助手卫星"出现在 HA 中
+
+
+# ========== 关键步骤：让小爱的语音走 HA Assist ==========
+# 米家 APP 中设置：
+# 1. 打开米家 APP → 小爱音箱 → 小爱训练
+# 2. 添加新训练：
+#    用户说：任何语音（通配符，填"*"）
+#    小爱回复：空（不说话）
+#    执行设备：Home Assistant（确保 HA 集成已绑定）
+# 3. 这样所有语音都会转发到 HA，小爱自己不再尝试理解
+#
+# 或者另一个方法（更干净）：
+# 在 HA 的 Xiaomi Mi Auto 集成中启用"Conversation"模式
+# 然后在 Assist Pipeline 中把 Xiaomi 设为语音卫星设备
+
+
+# ========== 测试验证 ==========
+# 全部配置完成后：
+# 1. 说 "小爱同学，打开客厅灯"
+#    → Claude 匹配"打开客厅灯" → scene.turn_on → 灯亮 → 播报
+#
+# 2. 说 "小爱同学，关客厅灯、关窗帘、关卧室灯、明天天气怎样"
+#    → Claude 切成 4 条，分别匹配 3 个场景 + 回答天气
+#    → 播报"已执行：关客厅灯、关窗帘、关卧室灯；明天天气是..."
+#
+# 3. 说 "小爱同学，准备睡觉了"
+#    → Claude 匹配"睡眠模式" → scene.turn_on → 播报"已执行睡眠模式"
+#
+# 4. 说 "小爱同学，现在几点了"
+#    → Claude 直接回答 → 小爱播报时间
