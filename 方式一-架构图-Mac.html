@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  width: 1080px; height: 1350px;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: linear-gradient(160deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
+  display: flex; align-items: center; justify-content: center; padding: 56px 64px;
+}
+.wrap { width: 100%; height: 100%; display: flex; flex-direction: column; gap: 24px; }
+
+.header { text-align: center; }
+.header h1 { color: #e6edf3; font-size: 44px; font-weight: 700; margin-bottom: 6px; }
+.header .oss { font-size: 18px; color: #8b949e; font-weight: 600; margin-top: 2px; }
+
+.card {
+  background: #21262d; border: 1px solid #30363d; border-radius: 16px;
+  padding: 28px 40px; flex: 1; display: flex; flex-direction: column; justify-content: center;
+}
+.card h2 { color: #e6edf3; font-size: 24px; font-weight: 700; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
+.card h2 .badge {
+  font-size: 13px; padding: 3px 12px; border-radius: 12px; font-weight: 600;
+  background: #8b949e1a; color: #8b949e; border: 1px solid #8b949e33;
+}
+
+.flow { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.flow:last-child { margin-bottom: 0; }
+.node {
+  flex: 1; background: #30363d33; border: 1px solid #30363d; border-radius: 12px;
+  padding: 18px 12px; text-align: center; min-height: 90px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.node .ico { font-size: 34px; margin-bottom: 4px; }
+.node .lb { color: #c9d1d9; font-size: 18px; font-weight: 600; }
+.node .sub { color: #8b949e; font-size: 14px; margin-top: 2px; }
+.node.hi { background: #d2992222; border-color: #d2992244; }
+.node.hi .lb { color: #d29922; }
+.node.ok { background: #3fb95022; border-color: #3fb95044; }
+.node.ok .lb { color: #3fb950; }
+.arr { color: #484f58; font-size: 24px; flex-shrink: 0; }
+
+.scenes { display: flex; gap: 14px; flex: 1; }
+.sc {
+  flex: 1; background: #30363d33; border: 1px solid #30363d; border-radius: 12px;
+  padding: 16px 12px; text-align: center; display: flex; flex-direction: column; justify-content: center;
+}
+.sc .si { font-size: 28px; margin-bottom: 4px; }
+.sc .st { color: #8b949e; font-size: 16px; line-height: 1.4; }
+.sc .sd { color: #3fb950; font-size: 15px; font-weight: 600; margin-top: 4px; line-height: 1.3; }
+
+.note {
+  background: #d2992211; border: 1px solid #d2992233; border-radius: 10px;
+  padding: 14px 20px; margin-top: 12px;
+}
+.note .nl { color: #d29922; font-size: 15px; font-weight: 600; }
+.note .nt { color: #8b949e; font-size: 15px; line-height: 1.5; }
+.note .nt b { color: #e6edf3; }
+.note .nt .gn { color: #3fb950; font-weight: 600; }
+
+.steps { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.step { display: flex; gap: 14px; align-items: flex-start; }
+.step .no {
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: #8b949e; color: #fff; font-size: 16px; font-weight: 700; margin-top: 1px;
+}
+.step .body { flex: 1; }
+.step .act { color: #e6edf3; font-size: 17px; font-weight: 600; margin-bottom: 4px; }
+.step .cmd {
+  background: #0d1117; color: #79c0ff; font-size: 14px; font-family: "SF Mono", Menlo, Consolas, monospace;
+  padding: 8px 14px; border-radius: 8px; border: 1px solid #30363d; line-height: 1.6;
+  white-space: nowrap; overflow: visible;
+}
+.step .cmd .k { color: #ff7b72; }
+.step .cmd .c { color: #8b949e; }
+
+.foot { text-align: center; color: #484f58; font-size: 14px; }
+.foot span { color: #8b949e; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <h1>🏠 方式一：用小爱音箱 &nbsp;<span style="font-size:18px;color:#8b949e;font-weight:400;">🍎 Mac</span></h1>
+    <div class="oss">零成本 · 闲置 MacBook / Mac mini 当服务器 · 25 分钟搞定</div>
+  </div>
+
+  <!-- 1. 工作流程（同 Windows） -->
+  <div class="card">
+    <h2>⚡ 工作流程 <span class="badge">小爱只当麦克风 + 喇叭</span></h2>
+    <div class="flow">
+      <div class="node"><div class="ico">🗣️</div><div class="lb">你说话</div><div class="sub">"关灯 关窗帘 天气"</div></div>
+      <div class="arr">→</div>
+      <div class="node"><div class="ico">🔊</div><div class="lb">小爱音箱</div><div class="sub">收音</div></div>
+      <div class="arr">→</div>
+      <div class="node"><div class="ico">📝</div><div class="lb">Whisper</div><div class="sub">语音→文字</div></div>
+    </div>
+    <div class="flow">
+      <div class="arr" style="visibility:hidden">→</div>
+      <div class="arr" style="visibility:hidden">→</div>
+      <div class="arr" style="visibility:hidden">→</div>
+      <div class="node hi" style="max-width:260px"><div class="ico">🧠</div><div class="lb">Claude 理解</div><div class="sub">切分指令 → 匹配米家场景</div></div>
+    </div>
+    <div class="flow">
+      <div class="node ok"><div class="ico">🎯</div><div class="lb">触发场景</div><div class="sub">scene.turn_on</div></div>
+      <div class="arr">→</div>
+      <div class="node"><div class="ico">💡❄️</div><div class="lb">设备执行</div><div class="sub">灯关 空调调 窗帘拉</div></div>
+      <div class="arr">→</div>
+      <div class="node"><div class="ico">🔊</div><div class="lb">小爱播报</div><div class="sub">"关灯 关窗帘 已执行"</div></div>
+    </div>
+  </div>
+
+  <!-- 2. 场景示例（同 Windows） -->
+  <div class="card">
+    <h2>📱 一句话做多个事</h2>
+    <div class="scenes">
+      <div class="sc"><div class="si">🌙</div><div class="st">"准备睡觉了"</div><div class="sd">→ 触发「睡眠模式」</div></div>
+      <div class="sc"><div class="si">📍</div><div class="st">"关灯 关窗帘 明天天气"</div><div class="sd">→ 切 3 条：触发 2 场景 + 回答天气</div></div>
+      <div class="sc"><div class="si">🚪</div><div class="st">"出门了"</div><div class="sd">→ 触发「离家模式」</div></div>
+    </div>
+    <div class="note">
+      <div class="nl">💡 核心逻辑</div>
+      <div class="nt">Claude 把复合指令<b>自动切成单条</b>，每条在米家场景列表里找匹配 → <span class="gn">米家配了什么它就触发什么</span></div>
+    </div>
+  </div>
+
+  <!-- 3. Mac 安装 -->
+  <div class="card">
+    <h2>🍎 Mac 安装步骤 <span class="badge">自带「终端」执行</span></h2>
+    <div class="steps">
+      <div class="step">
+        <div class="no">1</div>
+        <div class="body">
+          <div class="act">装 Docker Desktop（Mac 版）</div>
+          <div class="cmd"><span class="c">👉 浏览器打开</span> https://www.docker.com/products/docker-desktop/
+<span class="c">   下载 Mac 版 → 拖进 Applications → 打开，等🐳图标变绿</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="no">2</div>
+        <div class="body">
+          <div class="act">生成 SSH Key（一路回车，不设密码）</div>
+          <div class="cmd"><span class="k">ssh-keygen -t ed25519</span> -C <span class="c">"ha-server"</span> -f ~/.ssh/id_ed25519
+<span class="k">cat</span> ~/.ssh/id_ed25519.pub  <span class="c"># 复制整行 → github.com/settings/ssh/new → Add</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="no">3</div>
+        <div class="body">
+          <div class="act">启动 Home Assistant</div>
+          <div class="cmd"><span class="k">docker run -d</span> --name homeassistant --restart unless-stopped <span class="k">\</span>
+  --privileged <span class="k">-p 8123:8123 -v</span> /opt/ha/config:/config <span class="k">\</span>
+  ghcr.io/home-assistant/home-assistant:stable</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="no">4</div>
+        <div class="body">
+          <div class="act">克隆项目 → 安装 Claude 组件</div>
+          <div class="cmd"><span class="k">cd</span> /opt/ha/config <span class="k">&amp;&amp; mkdir -p</span> custom_components
+<span class="k">git clone</span> git@github.com:Gala202605/claude-smart-home.git /tmp/csh
+<span class="k">cp -r</span> /tmp/csh/way1-ha-assist/custom_components/claude_conversation <span class="k">.</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="no">5</div>
+        <div class="body">
+          <div class="act">写 API Key → 配语音管道 → 设为默认</div>
+          <div class="cmd"><span class="k">echo</span> <span class="c">'claude_conversation:</span>
+<span class="c">  api_key: "sk-ant-你的Key"'</span> <span class="k">&gt;&gt;</span> configuration.yaml
+<span class="k">docker restart</span> homeassistant
+<span class="c">👉 浏览器开 http://localhost:8123 → 语音助手 → Assist Pipeline</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">📌 所有命令在 Mac 自带「<span>终端</span>」里逐行执行 &nbsp;·&nbsp; 无需安装额外工具 &nbsp;·&nbsp; Docker Desktop 保持开机自启</div>
+
+</div>
+</body>
+</html>
