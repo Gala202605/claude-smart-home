@@ -45,7 +45,7 @@ CONF_MAX_TOKENS = "max_tokens"
 
 DEFAULT_API_URL = "https://api.anthropic.com/v1/messages"
 DEFAULT_MODEL = "claude-sonnet-4-20250514"
-DEFAULT_MAX_TOKENS = 1024
+DEFAULT_MAX_TOKENS = 2048
 
 # ============================================================
 # 默认系统提示词 — 这是 Claude 理解智能家居的"大脑"
@@ -184,6 +184,9 @@ class ClaudeConversationAgent(conversation.AbstractConversationAgent):
         self._max_tokens = max_tokens
         # 对话历史缓存 {conversation_id: [messages]}
         self._history: dict[str, list[dict]] = {}
+        # 历史时间戳，用于 TTL 清理
+        self._history_ts: dict[str, float] = {}
+        self._history_ttl = 3600  # 1 小时后自动清理
 
     @property
     def attribution(self):
@@ -197,6 +200,9 @@ class ClaudeConversationAgent(conversation.AbstractConversationAgent):
     ) -> conversation.ConversationResult:
         """处理用户输入 —— 整个流程的主入口。"""
         conv_id = user_input.conversation_id or ulid.ulid_now()
+
+        # 定期清理过期历史
+        self._cleanup_history()
 
         # 1. 获取当前设备状态，注入给 Claude
         device_context = await self._build_device_context()
@@ -233,6 +239,7 @@ class ClaudeConversationAgent(conversation.AbstractConversationAgent):
             assistant_msg["tool_calls"] = tool_calls_list
         messages.append(assistant_msg)
         self._history[conv_id] = messages[-10:]  # 最多保留 5 轮
+        self._history_ts[conv_id] = time.time()
 
         intent_resp = intent.IntentResponse(language=user_input.language)
 
@@ -260,6 +267,22 @@ class ClaudeConversationAgent(conversation.AbstractConversationAgent):
             response=intent_resp,
             conversation_id=conv_id,
         )
+
+    # ---------------------------------------------------------------
+    # 对话历史管理
+    # ---------------------------------------------------------------
+    def _cleanup_history(self):
+        """清理过期的对话历史，防止内存泄漏。"""
+        now = time.time()
+        expired = [
+            cid for cid, ts in self._history_ts.items()
+            if now - ts > self._history_ttl
+        ]
+        for cid in expired:
+            self._history.pop(cid, None)
+            self._history_ts.pop(cid, None)
+        if expired:
+            _LOGGER.debug("清理 %d 条过期对话历史", len(expired))
 
     # ---------------------------------------------------------------
     # 构建设备上下文
@@ -351,7 +374,10 @@ class ClaudeConversationAgent(conversation.AbstractConversationAgent):
     # 调用 Claude API
     # ---------------------------------------------------------------
     async def _call_claude(self, messages: list[dict]) -> tuple[str | None, list[dict] | None]:
-        """调用 Anthropic Claude API，返回 (回复文本, 工具调用列表)。"""
+        """调用 Anthropic Claude API，返回 (回复文本, 工具调用列表)。
+
+        支持自动重试：网络错误/超时最多重试 2 次，4xx 错误不重试。
+        """
         headers = {
             "Content-Type": "application/json",
             "x-api-key": self._api_key,
@@ -366,28 +392,58 @@ class ClaudeConversationAgent(conversation.AbstractConversationAgent):
             "tools": [HA_SERVICE_TOOL],
         }
 
-        timeout = aiohttp.ClientTimeout(total=30)
+        timeout = aiohttp.ClientTimeout(total=60)
+        max_retries = 2
+        retry_delay = 1.0
 
-        async with aiohttp.ClientSession() as session:
+        result = None
+        last_error = None
+
+        for attempt in range(max_retries + 1):
             try:
-                async with session.post(
-                    self._api_url,
-                    headers=headers,
-                    json=payload,
-                    timeout=timeout,
-                ) as resp:
-                    if resp.status != 200:
-                        error_text = await resp.text()
-                        _LOGGER.error("Claude API 返回错误 [%s]: %s", resp.status, error_text)
-                        return f"API 请求失败 (HTTP {resp.status})", None
+                async with aiohttp.ClientSession() as session:
+                    async with session.post(
+                        self._api_url,
+                        headers=headers,
+                        json=payload,
+                        timeout=timeout,
+                    ) as resp:
+                        if resp.status != 200:
+                            error_text = await resp.text()
+                            _LOGGER.error(
+                                "Claude API 返回错误 [%s]: %s",
+                                resp.status, error_text[:500],
+                            )
+                            # 4xx 客户端错误不重试（Key 无效、参数错误等）
+                            if 400 <= resp.status < 500:
+                                return f"API 请求失败 (HTTP {resp.status})", None
+                            # 5xx 服务端错误抛异常进入重试
+                            raise aiohttp.ClientError(
+                                f"HTTP {resp.status}: {error_text[:200]}"
+                            )
 
-                    result = await resp.json()
+                        result = await resp.json()
+                        break  # 成功，跳出重试循环
+
             except asyncio.TimeoutError:
-                _LOGGER.error("Claude API 请求超时")
-                return "请求超时，请稍后再试", None
+                last_error = "请求超时"
+                _LOGGER.warning(
+                    "Claude API 超时 (尝试 %d/%d)",
+                    attempt + 1, max_retries + 1,
+                )
             except aiohttp.ClientError as e:
-                _LOGGER.error("Claude API 网络错误: %s", e)
-                return "网络连接失败，请检查网络", None
+                last_error = str(e)[:300]
+                _LOGGER.warning(
+                    "Claude API 错误 (尝试 %d/%d): %s",
+                    attempt + 1, max_retries + 1, e,
+                )
+
+            if attempt < max_retries:
+                await asyncio.sleep(retry_delay * (attempt + 1))
+        else:
+            # 所有重试均失败
+            _LOGGER.error("Claude API 调用最终失败: %s", last_error)
+            return "服务暂时不可用，请稍后再试", None
 
         # 解析响应
         response_text = None
@@ -481,7 +537,7 @@ class ClaudeConversationAgent(conversation.AbstractConversationAgent):
         # 查找区域
         target_area = None
         for area in area_registry.async_list_areas():
-            if area.name == area_name or area.name in area_name:
+            if area.name == area_name or area_name in area.name:
                 target_area = area
                 break
 

@@ -3,6 +3,14 @@
 # 方式一：小爱音箱 + HA Assist + Claude
 # ============================================================
 #
+# ⚠️ 安全警告：
+#   此文件包含 API Key 示例，请勿直接提交到 Git！
+#   推荐使用 HA 的 secrets.yaml 管理敏感信息：
+#     api_key: !secret claude_api_key
+#   或使用环境变量：ANTHROPIC_API_KEY
+#   详见 troubleshooting.md 安全章节
+# ============================================================
+#
 # 使用方式：
 #   1. 把下方配置添加到 HA 的 configuration.yaml
 #   2. 重启 HA

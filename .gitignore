@@ -12,3 +12,9 @@ Thumbs.db
 .idea/
 .vscode/
 *.swp
+
+# 安全 — 防止 API Key 泄露
+configuration.yaml
+*.yaml.key
+secrets.yaml
+*.env

@@ -32,10 +32,11 @@
 
 ### 如果使用 Docker（推荐）
 
-参考 `docker-compose.yml` 文件内容。一键启动：
+使用项目提供的 `docker-compose.yml` 一键启动：
 
 ```bash
 cd /opt/wyoming
+# 复制项目中的 docker-compose.yml 到此目录
 docker compose up -d
 ```
 

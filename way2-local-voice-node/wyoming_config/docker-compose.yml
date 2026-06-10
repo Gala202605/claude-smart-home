@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  # === 唤醒词检测 ===
+  wyoming-porcupine:
+    image: rhasspy/wyoming-porcupine:latest
+    container_name: wyoming-porcupine
+    restart: unless-stopped
+    ports:
+      - "10400:10400"
+    command: >
+      --uri tcp://0.0.0.0:10400
+      --keyword hey_claude
+      --sensitivity 0.5
+      --threshold 0.5
+      --trigger-level 1
+    devices:
+      - /dev/snd:/dev/snd
+    volumes:
+      - /etc/asound.conf:/etc/asound.conf:ro
+
+  # === 语音转文字（ASR） ===
+  wyoming-whisper:
+    image: rhasspy/wyoming-faster-whisper:latest
+    container_name: wyoming-whisper
+    restart: unless-stopped
+    ports:
+      - "10300:10300"
+    command: >
+      --uri tcp://0.0.0.0:10300
+      --model large-v3
+      --language zh
+      --device auto
+      --initial-prompt "以下是家居控制场景的语音指令。"
+    volumes:
+      - whisper-data:/data
+
+  # === 文字转语音（TTS） ===
+  wyoming-piper:
+    image: rhasspy/wyoming-piper:latest
+    container_name: wyoming-piper
+    restart: unless-stopped
+    ports:
+      - "10200:10200"
+    command: >
+      --uri tcp://0.0.0.0:10200
+      --voice zh_CN-xiaoxiao-low
+    volumes:
+      - piper-data:/data
+
+volumes:
+  whisper-data:
+  piper-data:

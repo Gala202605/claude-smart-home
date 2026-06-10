@@ -91,14 +91,17 @@ docker restart homeassistant
 **[画面]**：
 
 ```bash
-# 树莓派上执行
+# 树莓派上执行（脚本会自动生成第二部分）
 wget https://raw.githubusercontent.com/你的用户名/claude-smart-home/main/way2-local-voice-node/scripts/setup_respeaker.sh
 
 chmod +x setup_respeaker.sh
 sudo ./setup_respeaker.sh
-# 等待自动重启
+# 等待自动重启（脚本会自动生成 setup_part2.sh）
 sudo ./setup_part2.sh
 ```
+
+> 💡 `setup_part2.sh` 由 `setup_respeaker.sh` 首次运行时自动生成，
+> 不需要单独下载。
 
 **[旁白]**：两个命令，树莓派语音节点就配好了。
 
