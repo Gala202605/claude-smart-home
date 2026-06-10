@@ -37,7 +37,18 @@
 ## 🚀 快速开始
 
 ### 方案一：零成本（用小爱音箱）
-只需 15 分钟，不花一分钱：👉 [方式一教程](./way1-ha-assist/README.md)
+
+只需 15 分钟，不花一分钱。选你的电脑系统，跟着图做：
+
+**🪟 Windows 用户：**
+
+[![Windows 安装步骤](./方式一-架构图-Windows.png)](./way1-ha-assist/README.md)
+
+**🍎 Mac 用户：**
+
+[![Mac 安装步骤](./方式一-架构图-Mac.png)](./way1-ha-assist/README.md)
+
+> 👆 点图片看详细教程，或直接看 [方式一完整文档](./way1-ha-assist/README.md)
 
 ### 方案二：专属硬件（树莓派）
 做一个独立的 Claude 语音终端：👉 [方式二教程](./way2-local-voice-node/README.md)
