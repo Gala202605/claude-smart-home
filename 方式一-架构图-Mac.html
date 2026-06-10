@@ -3,183 +3,201 @@
 <head>
 <meta charset="UTF-8">
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-  width: 1080px; height: 1350px;
-  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
-  background: linear-gradient(160deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
-  display: flex; align-items: center; justify-content: center; padding: 56px 64px;
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  width:1080px;min-height:1350px;font-family:"PingFang SC","Microsoft YaHei",sans-serif;
+  background:#151528;display:flex;align-items:center;justify-content:center;padding:40px;
 }
-.wrap { width: 100%; height: 100%; display: flex; flex-direction: column; gap: 24px; }
-
-.header { text-align: center; }
-.header h1 { color: #e6edf3; font-size: 44px; font-weight: 700; margin-bottom: 6px; }
-.header .oss { font-size: 18px; color: #8b949e; font-weight: 600; margin-top: 2px; }
-
-.card {
-  background: #21262d; border: 1px solid #30363d; border-radius: 16px;
-  padding: 28px 40px; flex: 1; display: flex; flex-direction: column; justify-content: center;
-}
-.card h2 { color: #e6edf3; font-size: 24px; font-weight: 700; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
-.card h2 .badge {
-  font-size: 13px; padding: 3px 12px; border-radius: 12px; font-weight: 600;
-  background: #8b949e1a; color: #8b949e; border: 1px solid #8b949e33;
+.container{
+  width:100%;display:flex;flex-direction:column;
+  background:linear-gradient(180deg,#0f0f1a 0%,#1a1a2e 50%,#151528 100%);
+  border-radius:32px;padding:32px 40px;border:1px solid rgba(255,255,255,0.04);
 }
 
-.flow { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
-.flow:last-child { margin-bottom: 0; }
-.node {
-  flex: 1; background: #30363d33; border: 1px solid #30363d; border-radius: 12px;
-  padding: 18px 12px; text-align: center; min-height: 90px;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-}
-.node .ico { font-size: 34px; margin-bottom: 4px; }
-.node .lb { color: #c9d1d9; font-size: 18px; font-weight: 600; }
-.node .sub { color: #8b949e; font-size: 14px; margin-top: 2px; }
-.node.hi { background: #d2992222; border-color: #d2992244; }
-.node.hi .lb { color: #d29922; }
-.node.ok { background: #3fb95022; border-color: #3fb95044; }
-.node.ok .lb { color: #3fb950; }
-.arr { color: #484f58; font-size: 24px; flex-shrink: 0; }
+.title{color:#fff;font-size:42px;font-weight:700;text-align:center;margin-bottom:6px}
+.subtitle{color:#8888bb;font-size:18px;text-align:center;margin-bottom:24px}
 
-.scenes { display: flex; gap: 14px; flex: 1; }
-.sc {
-  flex: 1; background: #30363d33; border: 1px solid #30363d; border-radius: 12px;
-  padding: 16px 12px; text-align: center; display: flex; flex-direction: column; justify-content: center;
+/* 前置准备 */
+.prereq{display:flex;gap:12px;margin-bottom:22px}
+.prereq-item{
+  flex:1;background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);border-radius:16px;
+  padding:14px 16px;text-align:center;
 }
-.sc .si { font-size: 28px; margin-bottom: 4px; }
-.sc .st { color: #8b949e; font-size: 16px; line-height: 1.4; }
-.sc .sd { color: #3fb950; font-size: 15px; font-weight: 600; margin-top: 4px; line-height: 1.3; }
+.prereq-item .icon{font-size:26px;margin-bottom:4px}
+.prereq-item .pn{color:#e0e0f0;font-size:16px;font-weight:600}
+.prereq-item .pd{color:#9999bb;font-size:13px;margin-top:2px;line-height:1.4}
 
-.note {
-  background: #d2992211; border: 1px solid #d2992233; border-radius: 10px;
-  padding: 14px 20px; margin-top: 12px;
-}
-.note .nl { color: #d29922; font-size: 15px; font-weight: 600; }
-.note .nt { color: #8b949e; font-size: 15px; line-height: 1.5; }
-.note .nt b { color: #e6edf3; }
-.note .nt .gn { color: #3fb950; font-weight: 600; }
+/* 流水线 */
+.flow-row{display:flex;align-items:center;justify-content:center;gap:6px;margin:6px 0 16px 0}
+.fbox{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px 14px;text-align:center;min-width:80px}
+.fbox .icon{font-size:22px}
+.fbox .fn{color:#bbb;font-size:13px;font-weight:600;margin-top:2px}
+.fbox.hl{background:rgba(200,180,255,0.10);border-color:rgba(200,180,255,0.25)}
+.fbox.hl .fn{color:#c8b4ff}
+.farrow{color:#444;font-size:20px}
 
-.steps { display: flex; flex-direction: column; gap: 10px; flex: 1; }
-.step { display: flex; gap: 14px; align-items: flex-start; }
-.step .no {
-  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  background: #8b949e; color: #fff; font-size: 16px; font-weight: 700; margin-top: 1px;
+/* 步骤卡片 */
+.step-card{
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);
+  border-radius:20px;padding:20px 24px;margin-bottom:14px;
+  display:flex;align-items:flex-start;gap:18px;
 }
-.step .body { flex: 1; }
-.step .act { color: #e6edf3; font-size: 17px; font-weight: 600; margin-bottom: 4px; }
-.step .cmd {
-  background: #0d1117; color: #79c0ff; font-size: 14px; font-family: "SF Mono", Menlo, Consolas, monospace;
-  padding: 8px 14px; border-radius: 8px; border: 1px solid #30363d; line-height: 1.6;
-  white-space: nowrap; overflow: visible;
+.step-num{
+  width:42px;height:42px;border-radius:50%;
+  background:rgba(200,180,255,0.10);border:1px solid rgba(200,180,255,0.20);
+  display:flex;align-items:center;justify-content:center;
+  color:#c8b4ff;font-size:18px;font-weight:700;flex-shrink:0;margin-top:2px;
 }
-.step .cmd .k { color: #ff7b72; }
-.step .cmd .c { color: #8b949e; }
+.step-body{flex:1}
+.step-title{color:#b8a4ff;font-size:19px;font-weight:700;margin-bottom:6px}
+.step-desc{color:#ccc;font-size:15px;line-height:1.6}
+.step-desc code{
+  background:rgba(255,255,255,0.06);color:#80e0c0;
+  padding:2px 8px;border-radius:6px;font-size:14px;font-family:"SF Mono",Menlo,Consolas,monospace;
+}
+.step-desc .block{
+  display:block;background:rgba(255,255,255,0.04);color:#80e0c0;
+  padding:8px 12px;border-radius:8px;font-size:14px;
+  font-family:"SF Mono",Menlo,Consolas,monospace;
+  margin-top:4px;line-height:1.6;border:1px solid rgba(255,255,255,0.06);
+}
+.step-desc .tag{
+  display:inline-block;background:rgba(100,200,255,0.10);color:#80c8ff;
+  padding:1px 10px;border-radius:8px;font-size:12px;font-weight:600;margin-right:4px;
+}
 
-.foot { text-align: center; color: #484f58; font-size: 14px; }
-.foot span { color: #8b949e; }
+/* 温馨提示 */
+.tip{
+  background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);
+  border-radius:16px;padding:14px 20px;margin-top:6px;
+  display:flex;align-items:flex-start;gap:12px;
+}
+.tip .icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.tip .text{color:#9999bb;font-size:13px;line-height:1.5}
+.tip .text b{color:#ccc}
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="container">
 
-  <div class="header">
-    <h1>🏠 方式一：用小爱音箱 &nbsp;<span style="font-size:18px;color:#8b949e;font-weight:400;">🍎 Mac</span></h1>
-    <div class="oss">零成本 · 闲置 MacBook / Mac mini 当服务器 · 25 分钟搞定</div>
-  </div>
+  <div class="title">🔧 把 Claude 接入小爱 · 🍎 Mac 版</div>
+  <div class="subtitle">闲置 MacBook / Mac mini 当服务器 · 零成本 · 25 分钟搞定</div>
 
-  <!-- 1. 工作流程（同 Windows） -->
-  <div class="card">
-    <h2>⚡ 工作流程 <span class="badge">小爱只当麦克风 + 喇叭</span></h2>
-    <div class="flow">
-      <div class="node"><div class="ico">🗣️</div><div class="lb">你说话</div><div class="sub">"关灯 关窗帘 天气"</div></div>
-      <div class="arr">→</div>
-      <div class="node"><div class="ico">🔊</div><div class="lb">小爱音箱</div><div class="sub">收音</div></div>
-      <div class="arr">→</div>
-      <div class="node"><div class="ico">📝</div><div class="lb">Whisper</div><div class="sub">语音→文字</div></div>
+  <!-- 前置准备 -->
+  <div class="prereq">
+    <div class="prereq-item">
+      <div class="icon">💻</div>
+      <div class="pn">闲置 Mac</div>
+      <div class="pd">插着电长期开机<br>跑 Home Assistant</div>
     </div>
-    <div class="flow">
-      <div class="arr" style="visibility:hidden">→</div>
-      <div class="arr" style="visibility:hidden">→</div>
-      <div class="arr" style="visibility:hidden">→</div>
-      <div class="node hi" style="max-width:260px"><div class="ico">🧠</div><div class="lb">Claude 理解</div><div class="sub">切分指令 → 匹配米家场景</div></div>
+    <div class="prereq-item">
+      <div class="icon">🔊</div>
+      <div class="pn">小爱音箱</div>
+      <div class="pd">小米系音箱即可<br>只当麦克风 + 喇叭</div>
     </div>
-    <div class="flow">
-      <div class="node ok"><div class="ico">🎯</div><div class="lb">触发场景</div><div class="sub">scene.turn_on</div></div>
-      <div class="arr">→</div>
-      <div class="node"><div class="ico">💡❄️</div><div class="lb">设备执行</div><div class="sub">灯关 空调调 窗帘拉</div></div>
-      <div class="arr">→</div>
-      <div class="node"><div class="ico">🔊</div><div class="lb">小爱播报</div><div class="sub">"关灯 关窗帘 已执行"</div></div>
+    <div class="prereq-item">
+      <div class="icon">🔑</div>
+      <div class="pn">Claude API Key</div>
+      <div class="pd">console.anthropic.com 注册<br>免费额度够用</div>
     </div>
   </div>
 
-  <!-- 2. 场景示例（同 Windows） -->
-  <div class="card">
-    <h2>📱 一句话做多个事</h2>
-    <div class="scenes">
-      <div class="sc"><div class="si">🌙</div><div class="st">"准备睡觉了"</div><div class="sd">→ 触发「睡眠模式」</div></div>
-      <div class="sc"><div class="si">📍</div><div class="st">"关灯 关窗帘 明天天气"</div><div class="sd">→ 切 3 条：触发 2 场景 + 回答天气</div></div>
-      <div class="sc"><div class="si">🚪</div><div class="st">"出门了"</div><div class="sd">→ 触发「离家模式」</div></div>
-    </div>
-    <div class="note">
-      <div class="nl">💡 核心逻辑</div>
-      <div class="nt">Claude 把复合指令<b>自动切成单条</b>，每条在米家场景列表里找匹配 → <span class="gn">米家配了什么它就触发什么</span></div>
-    </div>
+  <!-- 简易流程 -->
+  <div class="flow-row">
+    <div class="fbox"><div class="icon">🗣️</div><div class="fn">你对小爱说</div></div>
+    <div class="farrow">→</div>
+    <div class="fbox"><div class="icon">📡</div><div class="fn">小爱采集语音</div></div>
+    <div class="farrow">→</div>
+    <div class="fbox hl"><div class="icon">🧠</div><div class="fn">Claude 理解意图</div></div>
+    <div class="farrow">→</div>
+    <div class="fbox"><div class="icon">⚡</div><div class="fn">HA 执行操作</div></div>
+    <div class="farrow">→</div>
+    <div class="fbox"><div class="icon">🔊</div><div class="fn">小爱播报结果</div></div>
   </div>
 
-  <!-- 3. Mac 安装 -->
-  <div class="card">
-    <h2>🍎 Mac 安装步骤 <span class="badge">自带「终端」执行</span></h2>
-    <div class="steps">
-      <div class="step">
-        <div class="no">1</div>
-        <div class="body">
-          <div class="act">装 Docker Desktop（Mac 版）</div>
-          <div class="cmd"><span class="c">👉 浏览器打开</span> https://www.docker.com/products/docker-desktop/
-<span class="c">   下载 Mac 版 → 拖进 Applications → 打开，等🐳图标变绿</span></div>
-        </div>
-      </div>
-      <div class="step">
-        <div class="no">2</div>
-        <div class="body">
-          <div class="act">生成 SSH Key（一路回车，不设密码）</div>
-          <div class="cmd"><span class="k">ssh-keygen -t ed25519</span> -C <span class="c">"ha-server"</span> -f ~/.ssh/id_ed25519
-<span class="k">cat</span> ~/.ssh/id_ed25519.pub  <span class="c"># 复制整行 → github.com/settings/ssh/new → Add</span></div>
-        </div>
-      </div>
-      <div class="step">
-        <div class="no">3</div>
-        <div class="body">
-          <div class="act">启动 Home Assistant</div>
-          <div class="cmd"><span class="k">docker run -d</span> --name homeassistant --restart unless-stopped <span class="k">\</span>
-  --privileged <span class="k">-p 8123:8123 -v</span> /opt/ha/config:/config <span class="k">\</span>
-  ghcr.io/home-assistant/home-assistant:stable</div>
-        </div>
-      </div>
-      <div class="step">
-        <div class="no">4</div>
-        <div class="body">
-          <div class="act">克隆项目 → 安装 Claude 组件</div>
-          <div class="cmd"><span class="k">cd</span> /opt/ha/config <span class="k">&amp;&amp; mkdir -p</span> custom_components
-<span class="k">git clone</span> git@github.com:Gala202605/claude-smart-home.git /tmp/csh
-<span class="k">cp -r</span> /tmp/csh/way1-ha-assist/custom_components/claude_conversation <span class="k">.</span></div>
-        </div>
-      </div>
-      <div class="step">
-        <div class="no">5</div>
-        <div class="body">
-          <div class="act">写 API Key → 配语音管道 → 设为默认</div>
-          <div class="cmd"><span class="k">echo</span> <span class="c">'claude_conversation:</span>
-<span class="c">  api_key: "sk-ant-你的Key"'</span> <span class="k">&gt;&gt;</span> configuration.yaml
-<span class="k">docker restart</span> homeassistant
-<span class="c">👉 浏览器开 http://localhost:8123 → 语音助手 → Assist Pipeline</span></div>
-        </div>
+  <!-- 步骤 1 -->
+  <div class="step-card">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <div class="step-title">装 Docker Desktop（免费的容器工具）</div>
+      <div class="step-desc">
+        打开 <span style="color:#80c8ff">docker.com/products/docker-desktop</span>，下载 Mac 版，拖到 Applications，双击打开。<br>等右上角小鲸鱼图标变绿。
       </div>
     </div>
   </div>
 
-  <div class="foot">📌 所有命令在 Mac 自带「<span>终端</span>」里逐行执行 &nbsp;·&nbsp; 无需安装额外工具 &nbsp;·&nbsp; Docker Desktop 保持开机自启</div>
+  <!-- 步骤 2 -->
+  <div class="step-card">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <div class="step-title">装 Home Assistant（智能家居平台）</div>
+      <div class="step-desc">
+        打开 Mac 自带的「终端」（启动台里搜"终端"），粘贴下面这行，回车：<br>
+        <span class="block">docker run -d --name homeassistant --restart unless-stopped --privileged -p 8123:8123 -v /opt/ha/config:/config ghcr.io/home-assistant/home-assistant:stable</span>
+        等它跑完，浏览器打开 <code>http://localhost:8123</code> 能看到 HA 界面就行。
+      </div>
+    </div>
+  </div>
+
+  <!-- 步骤 3 -->
+  <div class="step-card">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <div class="step-title">接入小爱音箱到 HA</div>
+      <div class="step-desc">
+        <span class="tag">HACS</span> 安装 <code>Xiaomi Miot Auto</code> 集成。<br>
+        HA → 设置 → 设备与服务 → 添加集成 → 搜 "Xiaomi" → 扫码登录米家账号。<br>
+        登录后，你家的灯、空调、窗帘会自动同步到 HA。
+      </div>
+    </div>
+  </div>
+
+  <!-- 步骤 4 -->
+  <div class="step-card">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <div class="step-title">装上 Claude 智能大脑</div>
+      <div class="step-desc">
+        先在终端执行以下三行（一行一行粘，每行回车）：<br>
+        <span class="block">cd /opt/ha/config && mkdir -p custom_components</span>
+        <span class="block">git clone git@github.com:Gala202605/claude-smart-home.git /tmp/csh</span>
+        <span class="block">cp -r /tmp/csh/way1-ha-assist/custom_components/claude_conversation .</span>
+        然后在 <code>configuration.yaml</code> 末尾加上：
+        <span class="block">claude_conversation:<br>  api_key: "sk-ant-你的密钥"</span>
+        最后执行 <code>docker restart homeassistant</code> 重启。
+      </div>
+    </div>
+  </div>
+
+  <!-- 步骤 5 -->
+  <div class="step-card" style="margin-bottom:10px">
+    <div class="step-num">5</div>
+    <div class="step-body">
+      <div class="step-title">配置语音管道，开始使用</div>
+      <div class="step-desc">
+        浏览器打开 <code>http://localhost:8123</code>，初始设置完后：<br>
+        设置 → 语音助手 → Assist Pipeline → 新建：<br>
+        <span class="tag">语音转文字</span> 选 <code>Wyoming Whisper</code><br>
+        <span class="tag">对话代理</span> 选 <code>Claude Smart Home</code>（你刚装的）<br>
+        <span class="tag">文字转语音</span> 选 <code>Edge TTS</code>（中文女声）<br>
+        保存，设为默认。然后对着小爱说：<br>
+        <span style="color:#00c896;font-size:18px;font-weight:600;">"关灯、关窗帘、明天天气怎么样"</span><br>
+        <span style="color:#8888bb;font-size:14px;">✅ Claude 自动拆成 3 件事，全部执行并播报。</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 温馨提示 -->
+  <div class="tip">
+    <div class="icon">💡</div>
+    <div class="text">
+      <b>项目已开源：</b>完整代码、配置示例、视频教程都在
+      <span style="color:#00c896;">github.com/Gala202605/claude-smart-home</span><br>
+      不需要会编程，跟着步骤做就行。搞不定就回头看视频教程。<br>
+      如果执行命令时提示没装 Git，终端输入 <code style="background:rgba(255,255,255,0.06);color:#80e0c0;padding:1px 6px;border-radius:4px">xcode-select --install</code>。
+    </div>
+  </div>
 
 </div>
 </body>
